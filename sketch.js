@@ -30,17 +30,15 @@ function setup() {
   iron = createSprite(100,450);
   iron.addImage(ironImg);
   iron.scale = 0.3;
-  // creating Bg Velocity.
-  bg.velocityY = 4;
   // creating Edge Sprites.
   edges=createEdgeSprites();
   // Creating Iron Not To Cross Top And Not To Go Out of area
-  above = createSprite(40,-20,2000,20);
+  above = createSprite(40,510,2000,20);
   
   // creating Restart Sprite
-  restart = createSprite(800,100,40,40);
+  restart = createSprite(500,250,40,40);
   restart.addImage(restartImage);
-  restart.scale = 0.4; 
+  restart.scale = 1; 
   
   // Defining Groups.
   stoneGroup   = new Group();
@@ -51,11 +49,9 @@ function setup() {
 function draw() {
   background('black');
   if(gameState == "PLAY"){
+    // creating Bg Velocity.
+    bg.velocityY = 4;
     restart.visible = false;
-    // Making Iron Bounce Off Edges but not top.  
-    iron.bounceOff(edges[0]);
-    iron.bounceOff(edges[1]);
-    iron.bounceOff(edges[3]);
     // Making BG Come Down After A point.
     if(bg.y > 750 ){
       bg.y = 0;
@@ -95,11 +91,7 @@ function draw() {
       var temp = (spikeGroup).get(i);
       if(temp.isTouching(iron)){
         // Decreasing Scores if Touching Spikes.
-        diamondCollected -- ;
-        diamondCollected -- ;
-        diamondCollected -- ;
-        diamondCollected -- ;
-        diamondCollected -- ;
+        diamondCollected = diamondCollected - 5 ;
         temp.destroy()
       }
     }
@@ -113,21 +105,27 @@ function draw() {
     generateDiamonds();
     generateStones();
     generateSpikes();
-    drawSprites();   
-  }
+}
   else if(gameState == "END"){
     restart.visible = true;   
     bg.velocityY = 0;
-    diamondGroup.setVelocityYEach(0);
-    stoneGroup.setVelocityYEach(0);
-    spikeGroup.setVelocityYEach(0);
-    diamondGroup.setLifetimeEach(-1);
-    stoneGroup.setLifetimeEach(-1);
-    spikeGroup.setLifetimeEach(-1);  
+    diamondGroup.setVelocityYEach ( 0 );
+    stoneGroup.setVelocityYEach   ( 0 );
+    spikeGroup.setVelocityYEach   ( 0 );
+    diamondGroup.setLifetimeEach  (-1 );
+    stoneGroup.setLifetimeEach    (-1 );
+    spikeGroup.setLifetimeEach    (-1 );  
+    iron.visible = false ;
     if(mousePressedOver(restart)){
       restartGame();
    } 
-}  
+}
+    // Making Iron Bounce Off Edges but not top.  
+    iron.bounceOff(edges[0]);
+    iron.bounceOff(edges[1]);
+    iron.bounceOff(edges[2]);
+    iron.bounceOff(edges[3]);
+drawSprites();   
   // adding text to Count Diamonds.
   textSize(20);
   stroke("#fff");
@@ -174,7 +172,10 @@ function generateSpikes(){
 function restartGame(){
   gameState = "PLAY";
   diamondCollected = 0;
-  diamondGroup.destryEach();
-  stoneGroup.destryEach();
-  spikeGroup.destryEach();
+  diamondGroup.destroyEach();
+  stoneGroup.destroyEach();
+  spikeGroup.destroyEach();
+  iron.x =  100;
+  iron.y = 450;
+  iron.visible = true;
 }
